@@ -1,0 +1,54 @@
+{
+    "commandline": "ffuf -u http://strutted.htb/FUZZ -w wordlists/common.txt -mc 200,301,302 -ac -t 80 -o ffuf-common.json",
+    "time": "2025-07-23T02:05:30+10:00",
+    "results": [
+      {
+        "word": "about",
+        "status": 200,
+        "length": 6610,
+        "words": 2173,
+        "lines": 182,
+        "url": "http://strutted.htb/about"
+      },
+      {
+        "word": "download",
+        "status": 200,
+        "length": 39680602,
+        "words": 0,
+        "lines": 0,
+        "url": "http://strutted.htb/download"
+      },
+      {
+        "word": "how",
+        "status": 200,
+        "length": 6119,
+        "words": 2054,
+        "lines": 182,
+        "url": "http://strutted.htb/how"
+      },
+      {
+        "word": "render?url=https://www.google.com",
+        "status": 200,
+        "length": 5457,
+        "words": 1819,
+        "lines": 162,
+        "url": "http://strutted.htb/render?url=https://www.google.com"
+      },
+      {
+        "word": "dns-query?name=google.com&type=A",
+        "status": 200,
+        "length": 5550,
+        "words": 1878,
+        "lines": 164,
+        "url": "http://strutted.htb/dns-query?name=google.com&type=A"
+      },
+      {
+        "word": "dns-query?dns=q80BAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB",
+        "status": 200,
+        "length": 5479,
+        "words": 1819,
+        "lines": 162,
+        "url": "http://strutted.htb/dns-query?dns=q80BAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB"
+      }
+    ]
+  }

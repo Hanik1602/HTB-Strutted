@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///opt/homebrew/bin/../share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.97 scan initiated Thu Jul 24 06:55:46 2025 as: nmap -sCV -p22,80 -oA nmap_detail 10.10.11.59 -->
+<nmaprun scanner="nmap" args="nmap -sCV -p22,80 -oA nmap_detail 10.10.11.59" start="1753304146" startstr="Thu Jul 24 06:55:46 2025" version="7.97" xmloutputversion="1.05">
+<scaninfo type="connect" protocol="tcp" numservices="2" services="22,80"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<hosthint><status state="up" reason="unknown-response" reason_ttl="0"/>
+<address addr="10.10.11.59" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+</hosthint>
+<host starttime="1753304147" endtime="1753304165"><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="10.10.11.59" addrtype="ipv4"/>
+<hostnames>
+<hostname name="strutted.htb" type="PTR"/>
+</hostnames>
+<ports><port protocol="tcp" portid="22"><state state="open" reason="syn-ack" reason_ttl="0"/><service name="ssh" product="OpenSSH" version="8.9p1 Ubuntu 3ubuntu0.10" extrainfo="Ubuntu Linux; protocol 2.0" ostype="Linux" method="probed" conf="10"><cpe>cpe:/a:openbsd:openssh:8.9p1</cpe><cpe>cpe:/o:linux:linux_kernel</cpe></service><script id="ssh-hostkey" output="&#xa;  256 3e:ea:45:4b:c5:d1:6d:6f:e2:d4:d1:3b:0a:3d:a9:4f (ECDSA)&#xa;  256 64:cc:75:de:4a:e6:a5:b4:73:eb:3f:1b:cf:b4:e3:94 (ED25519)"><table>
+<elem key="fingerprint">3eea454bc5d16d6fe2d4d13b0a3da94f</elem>
+<elem key="bits">256</elem>
+<elem key="key">AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJ+m7rYl1vRtnm789pH3IRhxI4CNCANVj+N5kovboNzcw9vHsBwvPX3KYA3cxGbKiA0VqbKRpOHnpsMuHEXEVJc=</elem>
+<elem key="type">ecdsa-sha2-nistp256</elem>
+</table>
+<table>
+<elem key="fingerprint">64cc75de4ae6a5b473eb3f1bcfb4e394</elem>
+<elem key="bits">256</elem>
+<elem key="key">AAAAC3NzaC1lZDI1NTE5AAAAIOtuEdoYxTohG80Bo6YCqSzUY9+qbnAFnhsk4yAZNqhM</elem>
+<elem key="type">ssh-ed25519</elem>
+</table>
+</script></port>
+<port protocol="tcp" portid="80"><state state="open" reason="syn-ack" reason_ttl="0"/><service name="http" product="nginx" version="1.18.0" extrainfo="Ubuntu" ostype="Linux" method="probed" conf="10"><cpe>cpe:/a:igor_sysoev:nginx:1.18.0</cpe><cpe>cpe:/o:linux:linux_kernel</cpe></service><script id="http-server-header" output="nginx/1.18.0 (Ubuntu)"><elem>nginx/1.18.0 (Ubuntu)</elem>
+</script><script id="http-title" output="Strutted\xE2\x84\xA2 - Instant Image Uploads"><elem key="title">Strutted\xE2\x84\xA2 - Instant Image Uploads</elem>
+</script></port>
+</ports>
+<times srtt="322627" rttvar="182002" to="1050635"/>
+</host>
+<runstats><finished time="1753304165" timestr="Thu Jul 24 06:56:05 2025" summary="Nmap done at Thu Jul 24 06:56:05 2025; 1 IP address (1 host up) scanned in 18.22 seconds" elapsed="18.22" exit="success"/><hosts up="1" down="0" total="1"/>
+</runstats>
+</nmaprun>
